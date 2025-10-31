@@ -1,3 +1,12 @@
+"use client";
+
+export default function TestIntro() {
+  return (
+    <section style={{ /* ...seu código igual */ }}>
+      {/* conteúdo */}
+    </section>
+  );
+}
 export default function TestIntro() {
   return (
     <section style={{
