@@ -32,7 +32,7 @@ export default function Home() {
         Join thousands worldwide taking the QIRapid test — fast, reliable, and available in multiple languages.
       </p>
 
-      <a href="/test" className="btn btn-primary" style={{ marginTop: "2rem" }}>
+      <a href="/test/start" className="btn btn-primary" style={{ marginTop: "2rem" }}>
         Start the Test
       </a>
     </section>
