@@ -5,12 +5,12 @@ export default function StartTest() {
   const [question, setQuestion] = useState(1);
   const [answer, setAnswer] = useState("");
 
-  const handleNext = () => {
+  const next = () => {
     if (question < 3) {
-      setQuestion(question + 1);
+      setQuestion((q) => q + 1);
       setAnswer("");
     } else {
-      alert("Test completed! Demo flow finished.");
+      alert("Demo finished! ✅");
     }
   };
 
@@ -43,7 +43,7 @@ export default function StartTest() {
 
       <div style={{ display:"flex", gap:"12px" }}>
         <a href="/" className="btn">← Back</a>
-        <button className="btn btn-primary" onClick={handleNext}>Next →</button>
+        <button className="btn btn-primary" onClick={next}>Next →</button>
       </div>
     </section>
   );
