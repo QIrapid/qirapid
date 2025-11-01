@@ -2,15 +2,10 @@ import "./globals.css";
 
 export const metadata = {
   title: "QIRapid — Fast IQ Test",
-  description:
-    "Measure your IQ in minutes. Fast, accurate, and designed for all languages.",
+  description: "Measure your IQ in minutes. Fast, accurate, and designed for all languages.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
@@ -19,7 +14,7 @@ export default function RootLayout({
             <a className="logo" href="/">QIRapid</a>
             <nav className="nav">
               <a href="/">Home</a>
-              <a className="btn btn-primary" href="/test/Start" Test</a>
+              <a className="btn btn-primary" href="/test/start">Start Test</a>
               <div className="langs">
                 <span>🌍</span>
                 <a href="/">EN</a>
