@@ -4,7 +4,7 @@ import { useState } from "react";
 type Question = {
   text: string;
   options: string[];
-  correctIndex: number; // usaremos depois para pontuação
+  correctIndex: number;
 };
 
 const questions: Question[] = [
@@ -39,7 +39,6 @@ export default function StartTest() {
       setIndex(index + 1);
       setSelected(null);
     } else {
-      // Próxima etapa: iremos calcular score e mostrar resultado.
       alert("Demo finished! Next step: scoring & result page.");
     }
   };
@@ -49,11 +48,12 @@ export default function StartTest() {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "18px",
+        gap: "20px",
         alignItems: "center",
         justifyContent: "center",
         minHeight: "90vh",
-        color: "#EDEDED",
+        background: "linear-gradient(180deg, #e8f0ff 0%, #dce8ff 100%)",
+        color: "#0c1e46",
         padding: "0 16px",
         textAlign: "center",
       }}
@@ -69,7 +69,7 @@ export default function StartTest() {
         <div
           style={{
             height: 8,
-            background: "#1f2430",
+            background: "#c2d6ff",
             borderRadius: 999,
             overflow: "hidden",
           }}
@@ -78,7 +78,7 @@ export default function StartTest() {
             style={{
               width: `${progress}%`,
               height: "100%",
-              background: "#3B82F6",
+              background: "#1d4ed8",
               transition: "width 180ms ease",
             }}
           />
@@ -86,7 +86,9 @@ export default function StartTest() {
       </div>
 
       {/* Enunciado */}
-      <h1 style={{ fontSize: "1.6rem", color: "#3B82F6" }}>{q.text}</h1>
+      <h1 style={{ fontSize: "1.8rem", color: "#1d4ed8", fontWeight: 700 }}>
+        {q.text}
+      </h1>
 
       {/* Opções */}
       <div
@@ -104,31 +106,38 @@ export default function StartTest() {
             <button
               key={i}
               onClick={() => setSelected(i)}
-              className="btn"
               style={{
-                justifyContent: "flex-start",
+                display: "flex",
+                alignItems: "center",
                 gap: 10,
-                background: isSelected ? "#1f4c99" : "#111319",
-                border: "1px solid #1f2430",
-                padding: "14px 16px",
+                justifyContent: "flex-start",
+                background: isSelected ? "#1d4ed8" : "#ffffff",
+                color: isSelected ? "#fff" : "#0c1e46",
+                border: isSelected ? "2px solid #1d4ed8" : "1px solid #a1b5e0",
+                borderRadius: 12,
+                padding: "14px 18px",
+                fontWeight: 500,
+                cursor: "pointer",
+                boxShadow: isSelected ? "0 4px 10px rgba(0,0,0,0.2)" : "0 2px 6px rgba(0,0,0,0.05)",
+                transition: "all 0.2s ease",
               }}
             >
               <span
                 style={{
                   display: "inline-flex",
-                  width: 28,
-                  height: 28,
+                  width: 30,
+                  height: 30,
                   alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: 8,
-                  background: isSelected ? "#3B82F6" : "#1f2430",
-                  color: "#fff",
+                  borderRadius: "50%",
+                  background: isSelected ? "#fff" : "#e5edff",
+                  color: isSelected ? "#1d4ed8" : "#1d4ed8",
                   fontWeight: 700,
                 }}
               >
                 {"ABCD"[i]}
               </span>
-              <span style={{ opacity: 0.95 }}>{opt}</span>
+              <span>{opt}</span>
             </button>
           );
         })}
@@ -136,12 +145,22 @@ export default function StartTest() {
 
       {/* Ações */}
       <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
-        <a href="/" className="btn">← Back</a>
+        <a href="/" style={{ color: "#1d4ed8", textDecoration: "none", fontWeight: 500 }}>
+          ← Back
+        </a>
         <button
-          className="btn btn-primary"
           onClick={next}
           disabled={selected === null}
-          style={{ opacity: selected === null ? 0.6 : 1 }}
+          style={{
+            background: selected === null ? "#9bb7ff" : "#1d4ed8",
+            color: "#fff",
+            border: "none",
+            borderRadius: 10,
+            padding: "10px 22px",
+            fontWeight: 600,
+            cursor: selected === null ? "not-allowed" : "pointer",
+            transition: "background 0.2s ease",
+          }}
         >
           Next →
         </button>
