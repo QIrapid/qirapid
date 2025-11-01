@@ -19,7 +19,7 @@ export default function RootLayout({
             <a className="logo" href="/">QIRapid</a>
             <nav className="nav">
               <a href="/">Home</a>
-              <a className="btn btn-primary" href="/test">Start Test</a>
+              <a className="btn btn-primary" href="/test/Start" Test</a>
               <div className="langs">
                 <span>🌍</span>
                 <a href="/">EN</a>
