@@ -1,16 +1,28 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function ResultPage() {
-  const params = useSearchParams();
-  const router = useRouter();
-
-  const score = Number(params.get("score") || 0);
-  const total = Number(params.get("total") || 0);
+  const [score, setScore] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
   const pct = total > 0 ? Math.round((score / total) * 100) : 0;
 
-  // Mensagem simples por faixa — depois refinamos
+  // Lê ?score=&total= da URL sem hooks do Next
+  useEffect(() => {
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const s = Number(sp.get("score") || 0);
+      const t = Number(sp.get("total") || 0);
+      setScore(Number.isFinite(s) ? s : 0);
+      setTotal(Number.isFinite(t) ? t : 0);
+    } catch (_) {
+      // se algo falhar, mantém 0
+      setScore(0);
+      setTotal(0);
+    }
+  }, []);
+
+  // Mensagem simples por faixa
   let label = "Keep practicing!";
   if (pct >= 85) label = "Excellent performance!";
   else if (pct >= 70) label = "Great job!";
@@ -49,7 +61,8 @@ export default function ResultPage() {
         <p style={{ margin: 0, opacity: 0.85 }}>
           Score: <strong>{score}</strong> out of <strong>{total}</strong>
         </p>
-        <div style={{ marginTop: 10, textAlign: "left" }}>
+
+        <div style={{ marginTop: 12, textAlign: "left" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
             <small style={{ opacity: 0.8 }}>Accuracy</small>
             <small style={{ opacity: 0.8 }}>{pct}%</small>
@@ -66,41 +79,46 @@ export default function ResultPage() {
               style={{
                 width: `${pct}%`,
                 height: "100%",
-                background: "#22c55e",
+                background: pct >= 70 ? "#22c55e" : pct >= 40 ? "#f59e0b" : "#ef4444",
                 transition: "width 240ms ease",
               }}
             />
           </div>
         </div>
 
-        <p style={{ marginTop: 16, fontSize: "1.1rem" }}>
-          {label}
-        </p>
+        <p style={{ marginTop: 16, fontSize: "1.1rem" }}>{label}</p>
       </div>
 
       <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
-        <a href="/test/start" style={btnSecondary}>↺ Retake Test</a>
-        <a href="/" style={btnPrimary}>Home</a>
+        <a
+          href="/test/start"
+          style={{
+            background: "#fff",
+            color: "#1d4ed8",
+            border: "1px solid #1d4ed8",
+            borderRadius: 10,
+            padding: "10px 22px",
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          ↺ Retake Test
+        </a>
+        <a
+          href="/"
+          style={{
+            background: "#1d4ed8",
+            color: "#fff",
+            border: "none",
+            borderRadius: 10,
+            padding: "10px 22px",
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          Home
+        </a>
       </div>
     </section>
   );
 }
-
-const btnPrimary: React.CSSProperties = {
-  background: "#1d4ed8",
-  color: "#fff",
-  border: "none",
-  borderRadius: 10,
-  padding: "10px 22px",
-  fontWeight: 600,
-  textDecoration: "none",
-};
-const btnSecondary: React.CSSProperties = {
-  background: "#fff",
-  color: "#1d4ed8",
-  border: "1px solid #1d4ed8",
-  borderRadius: 10,
-  padding: "10px 22px",
-  fontWeight: 600,
-  textDecoration: "none",
-};
