@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
 
-/** ---- Tipos ---- */
+import React, { useState, type ReactNode } from "react";
+
+/** ---------- Tipos ---------- */
 type Option = {
   label: string;
-  text?: string;      // para alternativas de texto
-  svg?: JSX.Element;  // para alternativas com figura
+  text?: string;        // alternativa de texto
+  svg?: React.ReactNode; // alternativa visual (SVG inline)
 };
 
 type Question = {
@@ -15,34 +16,42 @@ type Question = {
   kind: "text" | "visual";
 };
 
-/** ---- SVGs para a pergunta visual ---- */
-const IconSquare = ({ fill = "#1d4ed8" }: { fill?: string }) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
-    <rect x="8" y="8" width="32" height="32" rx="6" fill={fill} />
-  </svg>
-);
+/** ---------- SVGs ---------- */
+function IconSquare({ fill = "#1d4ed8" }: { fill?: string }) {
+  return (
+    <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
+      <rect x="8" y="8" width="32" height="32" rx="6" fill={fill} />
+    </svg>
+  );
+}
 
-const IconCircle = ({ fill = "#1d4ed8" }: { fill?: string }) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
-    <circle cx="24" cy="24" r="16" fill={fill} />
-  </svg>
-);
+function IconCircle({ fill = "#1d4ed8" }: { fill?: string }) {
+  return (
+    <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
+      <circle cx="24" cy="24" r="16" fill={fill} />
+    </svg>
+  );
+}
 
-const IconTriangle = ({ fill = "#1d4ed8" }: { fill?: string }) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
-    <path d="M24 8 L40 40 L8 40 Z" fill={fill} />
-  </svg>
-);
+function IconTriangle({ fill = "#1d4ed8" }: { fill?: string }) {
+  return (
+    <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
+      <path d="M24 8 L40 40 L8 40 Z" fill={fill} />
+    </svg>
+  );
+}
 
-const IconPattern = () => (
-  <svg width="72" height="24" viewBox="0 0 72 24" aria-hidden>
-    <circle cx="12" cy="12" r="8" fill="#1d4ed8" />
-    <rect x="28" y="4" width="16" height="16" rx="4" fill="#1d4ed8" />
-    <path d="M60 4 L68 20 L52 20 Z" fill="#1d4ed8" />
-  </svg>
-);
+function IconPattern() {
+  return (
+    <svg width="72" height="24" viewBox="0 0 72 24" aria-hidden>
+      <circle cx="12" cy="12" r="8" fill="#1d4ed8" />
+      <rect x="28" y="4" width="16" height="16" rx="4" fill="#1d4ed8" />
+      <path d="M60 4 L68 20 L52 20 Z" fill="#1d4ed8" />
+    </svg>
+  );
+}
 
-/** ---- Perguntas ---- */
+/** ---------- Perguntas ---------- */
 const questions: Question[] = [
   {
     text: "What number comes next in the series: 2, 4, 8, 16, ... ?",
@@ -56,7 +65,8 @@ const questions: Question[] = [
     correctIndex: 2,
   },
   {
-    text: "If all Bloops are Razzies and all Razzies are Lazzies, are all Bloops Lazzies?",
+    text:
+      "If all Bloops are Razzies and all Razzies are Lazzies, are all Bloops Lazzies?",
     kind: "text",
     options: [
       { label: "A", text: "Yes" },
@@ -71,7 +81,7 @@ const questions: Question[] = [
     kind: "visual",
     options: [
       { label: "A", svg: <IconSquare /> },
-      { label: "B", svg: <IconCircle /> },      // ← correta (exemplo)
+      { label: "B", svg: <IconCircle /> }, // correta (exemplo)
       { label: "C", svg: <IconTriangle /> },
       { label: "D", svg: <IconPattern /> },
     ],
@@ -79,6 +89,7 @@ const questions: Question[] = [
   },
 ];
 
+/** ---------- Página ---------- */
 export default function StartTest() {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -90,7 +101,7 @@ export default function StartTest() {
   const next = () => {
     if (selected === null) return;
     if (index < total - 1) {
-      setIndex(index + 1);
+      setIndex((i) => i + 1);
       setSelected(null);
     } else {
       alert("Demo finished! Next step: scoring & result page.");
@@ -102,7 +113,7 @@ export default function StartTest() {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "20px",
+        gap: 20,
         alignItems: "center",
         justifyContent: "center",
         minHeight: "90vh",
@@ -172,7 +183,9 @@ export default function StartTest() {
                 padding: "14px 18px",
                 fontWeight: 500,
                 cursor: "pointer",
-                boxShadow: isSelected ? "0 4px 10px rgba(0,0,0,0.2)" : "0 2px 6px rgba(0,0,0,0.05)",
+                boxShadow: isSelected
+                  ? "0 4px 10px rgba(0,0,0,0.2)"
+                  : "0 2px 6px rgba(0,0,0,0.05)",
                 transition: "all 0.2s ease",
                 textAlign: "left",
               }}
