@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, type ReactNode } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 /** ---------- Tipos ---------- */
 type Option = {
@@ -24,7 +25,6 @@ function IconSquare({ fill = "#1d4ed8" }: { fill?: string }) {
     </svg>
   );
 }
-
 function IconCircle({ fill = "#1d4ed8" }: { fill?: string }) {
   return (
     <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
@@ -32,7 +32,6 @@ function IconCircle({ fill = "#1d4ed8" }: { fill?: string }) {
     </svg>
   );
 }
-
 function IconTriangle({ fill = "#1d4ed8" }: { fill?: string }) {
   return (
     <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
@@ -40,7 +39,6 @@ function IconTriangle({ fill = "#1d4ed8" }: { fill?: string }) {
     </svg>
   );
 }
-
 function IconPattern() {
   return (
     <svg width="72" height="24" viewBox="0 0 72 24" aria-hidden>
@@ -51,7 +49,7 @@ function IconPattern() {
   );
 }
 
-/** ---------- Perguntas ---------- */
+/** ---------- Perguntas (mix texto + visual) ---------- */
 const questions: Question[] = [
   {
     text: "What number comes next in the series: 2, 4, 8, 16, ... ?",
@@ -89,10 +87,11 @@ const questions: Question[] = [
   },
 ];
 
-/** ---------- Página ---------- */
 export default function StartTest() {
+  const router = useRouter();
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
+  const [answers, setAnswers] = useState<number[]>([]); // registra escolhas
 
   const q = questions[index];
   const total = questions.length;
@@ -100,11 +99,22 @@ export default function StartTest() {
 
   const next = () => {
     if (selected === null) return;
+
+    const newAnswers = [...answers];
+    newAnswers[index] = selected;
+    setAnswers(newAnswers);
+
     if (index < total - 1) {
       setIndex((i) => i + 1);
       setSelected(null);
     } else {
-      alert("Demo finished! Next step: scoring & result page.");
+      // calcula score e navega para /test/result
+      const score = newAnswers.reduce((acc, choice, i) => {
+        return acc + (choice === questions[i].correctIndex ? 1 : 0);
+      }, 0);
+
+      // envia por query string
+      router.push(`/test/result?score=${score}&total=${total}`);
     }
   };
 
@@ -207,7 +217,6 @@ export default function StartTest() {
                 {opt.label}
               </span>
 
-              {/* Mostra texto OU SVG */}
               {q.kind === "text" && <span>{opt.text}</span>}
               {q.kind === "visual" && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -239,7 +248,7 @@ export default function StartTest() {
             transition: "background 0.2s ease",
           }}
         >
-          Next →
+          {index < total - 1 ? "Next →" : "Finish ✅"}
         </button>
       </div>
     </section>
