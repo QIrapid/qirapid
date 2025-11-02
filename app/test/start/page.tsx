@@ -1,26 +1,80 @@
 "use client";
 import { useState } from "react";
 
-type Question = {
-  text: string;
-  options: string[];
-  correctIndex: number;
+/** ---- Tipos ---- */
+type Option = {
+  label: string;
+  text?: string;      // para alternativas de texto
+  svg?: JSX.Element;  // para alternativas com figura
 };
 
+type Question = {
+  text: string;
+  options: Option[];
+  correctIndex: number;
+  kind: "text" | "visual";
+};
+
+/** ---- SVGs para a pergunta visual ---- */
+const IconSquare = ({ fill = "#1d4ed8" }: { fill?: string }) => (
+  <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
+    <rect x="8" y="8" width="32" height="32" rx="6" fill={fill} />
+  </svg>
+);
+
+const IconCircle = ({ fill = "#1d4ed8" }: { fill?: string }) => (
+  <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
+    <circle cx="24" cy="24" r="16" fill={fill} />
+  </svg>
+);
+
+const IconTriangle = ({ fill = "#1d4ed8" }: { fill?: string }) => (
+  <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden>
+    <path d="M24 8 L40 40 L8 40 Z" fill={fill} />
+  </svg>
+);
+
+const IconPattern = () => (
+  <svg width="72" height="24" viewBox="0 0 72 24" aria-hidden>
+    <circle cx="12" cy="12" r="8" fill="#1d4ed8" />
+    <rect x="28" y="4" width="16" height="16" rx="4" fill="#1d4ed8" />
+    <path d="M60 4 L68 20 L52 20 Z" fill="#1d4ed8" />
+  </svg>
+);
+
+/** ---- Perguntas ---- */
 const questions: Question[] = [
   {
     text: "What number comes next in the series: 2, 4, 8, 16, ... ?",
-    options: ["18", "24", "32", "28"],
+    kind: "text",
+    options: [
+      { label: "A", text: "18" },
+      { label: "B", text: "24" },
+      { label: "C", text: "32" },
+      { label: "D", text: "28" },
+    ],
     correctIndex: 2,
   },
   {
     text: "If all Bloops are Razzies and all Razzies are Lazzies, are all Bloops Lazzies?",
-    options: ["Yes", "No", "Only sometimes", "Cannot be determined"],
+    kind: "text",
+    options: [
+      { label: "A", text: "Yes" },
+      { label: "B", text: "No" },
+      { label: "C", text: "Only sometimes" },
+      { label: "D", text: "Cannot be determined" },
+    ],
     correctIndex: 0,
   },
   {
-    text: "Choose the figure that best completes the pattern (placeholder visual).",
-    options: ["A", "B", "C", "D"],
+    text: "Choose the figure that best completes the pattern:",
+    kind: "visual",
+    options: [
+      { label: "A", svg: <IconSquare /> },
+      { label: "B", svg: <IconCircle /> },      // ← correta (exemplo)
+      { label: "C", svg: <IconTriangle /> },
+      { label: "D", svg: <IconPattern /> },
+    ],
     correctIndex: 1,
   },
 ];
@@ -109,7 +163,7 @@ export default function StartTest() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 10,
+                gap: 14,
                 justifyContent: "flex-start",
                 background: isSelected ? "#1d4ed8" : "#ffffff",
                 color: isSelected ? "#fff" : "#0c1e46",
@@ -120,6 +174,7 @@ export default function StartTest() {
                 cursor: "pointer",
                 boxShadow: isSelected ? "0 4px 10px rgba(0,0,0,0.2)" : "0 2px 6px rgba(0,0,0,0.05)",
                 transition: "all 0.2s ease",
+                textAlign: "left",
               }}
             >
               <span
@@ -133,11 +188,20 @@ export default function StartTest() {
                   background: isSelected ? "#fff" : "#e5edff",
                   color: isSelected ? "#1d4ed8" : "#1d4ed8",
                   fontWeight: 700,
+                  flex: "0 0 30px",
                 }}
               >
-                {"ABCD"[i]}
+                {opt.label}
               </span>
-              <span>{opt}</span>
+
+              {/* Mostra texto OU SVG */}
+              {q.kind === "text" && <span>{opt.text}</span>}
+              {q.kind === "visual" && (
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  {opt.svg}
+                  <span style={{ opacity: 0.6 }}>Option {opt.label}</span>
+                </div>
+              )}
             </button>
           );
         })}
