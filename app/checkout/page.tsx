@@ -1,47 +1,36 @@
-"use client";
+import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
 
-import React from "react";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
 
-export default function CheckoutPage() {
-  async function pay() {
-    const res = await fetch("/api/checkout", { method: "POST" });
-    if (!res.ok) return alert("Checkout error.");
-    const data = await res.json();
-    if (data?.url) window.location.href = data.url;
+export async function POST(req: NextRequest) {
+  try {
+    // Recupera a URL do site
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qirapid.com";
+
+    // Cria a sessão de pagamento
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: [
+        {
+          price: process.env.STRIPE_PRICE_ID!,
+          quantity: 1,
+        },
+      ],
+      success_url: `${siteUrl}/payment/success`,
+      cancel_url: `${siteUrl}/payment/cancel`,
+    });
+
+    // Retorna o link de checkout da Stripe
+    return NextResponse.json({ url: session.url });
+  } catch (error: any) {
+    console.error("Erro ao criar sessão de pagamento:", error);
+    return NextResponse.json(
+      { error: "Erro ao criar sessão de pagamento" },
+      { status: 500 }
+    );
   }
-
-  return (
-    <section
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 14,
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "70vh",
-        color: "#0c1e46",
-        textAlign: "center",
-      }}
-    >
-      <h1 style={{ color: "#1d4ed8" }}>Unlock Your Result</h1>
-      <p style={{ maxWidth: 520, opacity: 0.85 }}>
-        Secure checkout. You’ll get instant access to your full IQ result and insights.
-      </p>
-      <button
-        onClick={pay}
-        style={{
-          background: "#1d4ed8",
-          color: "#fff",
-          border: "none",
-          borderRadius: 10,
-          padding: "12px 24px",
-          fontWeight: 700,
-          cursor: "pointer",
-        }}
-      >
-        Pay & Unlock
-      </button>
-      <p style={{ fontSize: 12, opacity: 0.7 }}>Powered by Stripe • Test mode</p>
-    </section>
-  );
 }
